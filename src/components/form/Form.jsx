@@ -1,6 +1,17 @@
 import { useState } from 'react';
 import Offer from '../offer/Offer';
-import { StyledFormContainer, StyledInputContainer, StyledInput, StyledTextTerms, StyledSpanTerms, StyledErrorMessage, StyledHeroForm } from './style';
+import {
+	StyledFormContainer,
+	StyledInputContainer,
+	StyledIconError,
+	StyledInput,
+	StyledInputButton,
+	StyledTextTerms,
+	StyledSpanTerms,
+	StyledErrorContainer,
+	StyledErrorMessage,
+	StyledHeroForm
+} from './style';
 
 const Form = () => {
 	const [formValues, setFormValues] = useState({
@@ -15,10 +26,22 @@ const Form = () => {
 			password: false
 		},
 		errors: {
-			name: false,
-			lastname: false,
-			email: false,
-			password: false
+			name: {
+				empty: false,
+				wrong: false
+			},
+			lastname: {
+				empty: false,
+				wrong: false
+			},
+			email: {
+				empty: false,
+				wrong: false
+			},
+			password: {
+				empty: false,
+				wrong: false
+			}
 		}
 	});
 
@@ -26,83 +49,125 @@ const Form = () => {
 		<StyledHeroForm>
 			<Offer />
 			<StyledFormContainer>
-			
-
-			
 				<form onSubmit={handleSubmit}>
 					<StyledInputContainer>
+						{(formValues.errors.name.empty || formValues.errors.name.wrong) && (
+							<StyledIconError src='/assets/images/icon-error.svg' />
+						)}
 						<StyledInput
 							type='text'
 							name='name'
 							id='name'
-							placeholder='Name'		
-							
+							placeholder='Name'
 							onChange={event =>
 								changeFormValues(event.target, formValues, setFormValues)
 							}
 						/>
-					</StyledInputContainer>	
-					{formValues.isDirty.name && formValues.errors.name && <StyledErrorMessage>El nombre no es correcto</StyledErrorMessage>}
-					
+
+						<StyledErrorContainer>
+							{formValues.errors.name.empty && (
+								<StyledErrorMessage>
+									First Name cannot be empty
+								</StyledErrorMessage>
+							)}
+							{formValues.errors.name.wrong && (
+								<StyledErrorMessage>Invalid First Name</StyledErrorMessage>
+							)}
+						</StyledErrorContainer>
+					</StyledInputContainer>
+
 					<StyledInputContainer>
+						{(formValues.errors.lastname.empty ||
+							formValues.errors.lastname.wrong) && (
+							<StyledIconError src='/assets/images/icon-error.svg' />
+						)}
 						<StyledInput
 							type='text'
 							name='lastname'
 							id='lastname'
 							placeholder='Last Name'
-							
 							onChange={event =>
 								changeFormValues(event.target, formValues, setFormValues)
 							}
 						/>
 
+						<StyledErrorContainer>
+							{formValues.errors.lastname.empty && (
+								<StyledErrorMessage>
+									Last Name cannot be empty
+								</StyledErrorMessage>
+							)}
+							{formValues.errors.lastname.wrong && (
+								<StyledErrorMessage>Invalid Last Name</StyledErrorMessage>
+							)}
+						</StyledErrorContainer>
 					</StyledInputContainer>
-					
-					{formValues.isDirty.lastname && formValues.errors.lastname && <StyledErrorMessage>El apellido no es correcto</StyledErrorMessage>}
-					
+
 					<StyledInputContainer>
+						{(formValues.errors.email.empty ||
+							formValues.errors.email.wrong) && (
+							<StyledIconError src='/assets/images/icon-error.svg' />
+						)}
+
 						<StyledInput
 							type='email'
 							name='email'
 							id='email'
 							placeholder='Email Address'
-							
 							onChange={event =>
 								changeFormValues(event.target, formValues, setFormValues)
 							}
 						/>
+						<StyledErrorContainer>
+							{formValues.errors.email.empty && (
+								<StyledErrorMessage>Email cannot be empty</StyledErrorMessage>
+							)}
+							{formValues.errors.email.wrong && (
+								<StyledErrorMessage>Invalid Email</StyledErrorMessage>
+							)}
+						</StyledErrorContainer>
 					</StyledInputContainer>
-					
-					{formValues.isDirty.email && formValues.errors.email && <StyledErrorMessage>El email no es correcto</StyledErrorMessage>}
-					
+
 					<StyledInputContainer>
+						{(formValues.errors.password.empty ||
+							formValues.errors.password.wrong) && (
+							<StyledIconError src='/assets/images/icon-error.svg' />
+						)}
+
 						<StyledInput
 							type='password'
 							name='password'
 							id='password'
 							placeholder='Password'
-							
 							onChange={event =>
 								changeFormValues(event.target, formValues, setFormValues)
 							}
 						/>
+						<StyledErrorContainer>
+							{formValues.errors.password.empty && (
+								<StyledErrorMessage>Password cannot be empty</StyledErrorMessage>
+							)}
+							{formValues.errors.password.wrong && (
+								<StyledErrorMessage>Invalid Password</StyledErrorMessage>
+							)}
+						</StyledErrorContainer>
 					</StyledInputContainer>
-					
-					{formValues.isDirty.password && formValues.errors.password && <StyledErrorMessage>El password no es correcto</StyledErrorMessage>}
-					
+
 					<StyledInputContainer>
-						<StyledInput
+						<StyledInputButton
 							type='submit'
 							value='CLAIM TOUR FREE TRIAL'
 							font
-							
-							disabled={!Object.values(formValues.errors).every(error => !error)}
+							disabled={
+								!Object.values(formValues.errors).every(error => !error)
+							}
 						/>
-
 					</StyledInputContainer>
-					<StyledTextTerms>By clicking the button, you are agreeing to our<StyledSpanTerms> Terms and Services</StyledSpanTerms></StyledTextTerms>
+					<StyledTextTerms>
+						By clicking the button, you are agreeing to our
+						<StyledSpanTerms> Terms and Services</StyledSpanTerms>
+					</StyledTextTerms>
 				</form>
-			
 			</StyledFormContainer>
 		</StyledHeroForm>
 	);
@@ -123,7 +188,11 @@ const validateForm = (name, value, formValues, setFormValues) => {
 			...formValues,
 			errors: {
 				...formValues.errors,
-				name: isValidName
+				name: {
+					...formValues.errors.name,
+					wrong: isValidName && formatedValue,
+					empty: !formatedValue
+				}
 			},
 			isDirty: {
 				...formValues.isDirty,
@@ -139,7 +208,11 @@ const validateForm = (name, value, formValues, setFormValues) => {
 			...formValues,
 			errors: {
 				...formValues.errors,
-				lastname: isValidLastName
+				lastname: {
+					...formValues.errors.lastname,
+					wrong: isValidLastName && formatedValue,
+					empty: !formatedValue
+				}
 			},
 			isDirty: {
 				...formValues.isDirty,
@@ -155,7 +228,11 @@ const validateForm = (name, value, formValues, setFormValues) => {
 			...formValues,
 			errors: {
 				...formValues.errors,
-				email: isValidEmail
+				email: {
+					...formValues.errors.email,
+					wrong: isValidEmail && formatedValue,
+					empty: !formatedValue
+				}
 			},
 			isDirty: {
 				...formValues.isDirty,
@@ -171,7 +248,11 @@ const validateForm = (name, value, formValues, setFormValues) => {
 			...formValues,
 			errors: {
 				...formValues.errors,
-				password: isValidPassword
+				password: {
+					...formValues.errors.password,
+					wrong: isValidPassword && formatedValue,
+					empty: !formatedValue
+				}
 			},
 			isDirty: {
 				...formValues.isDirty,
