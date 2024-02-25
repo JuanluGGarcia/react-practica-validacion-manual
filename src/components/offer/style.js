@@ -6,6 +6,8 @@ const StyledContainer = styled.div`
 	background-color: ${COLORS.FUCSIA};
 	color: ${COLORS.WHITE};
     border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0px 6px 0px 0px rgba(0, 0, 0, 0.2);
 `;
 const StyledSpan = styled.span`
     font-size: .9375rem;
@@ -14,5 +16,5 @@ const StyledSpan = styled.span`
 const StyledText = styled.p`
     font-size: .9375rem;
 `;
-
+ 
 export { StyledContainer, StyledText, StyledSpan };
